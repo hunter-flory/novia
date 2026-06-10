@@ -36,12 +36,27 @@ export default function ExperiencePlayer() {
     switch (currentScene) {
       case 0:
         return (
-        //   <IntroScene
-        //     recipientName={demoMoment.recipientName}
-        //     senderName={demoMoment.senderName}
-        //     onNext={goNext}
-        //   />
-        null // skipping intro now
+          <button
+            type="button"
+            onClick={goNext}
+            className="flex h-full w-full items-center justify-center px-8 text-center"
+            aria-label="Start the experience"
+          >
+            <div className="space-y-6">
+              <p
+                className="text-2xl leading-relaxed sm:text-3xl"
+                style={{ fontFamily: '"Didot", "Bodoni MT", "Times New Roman", serif' }}
+              >
+                For {demoMoment.recipientName}
+              </p>
+              <p className="text-base leading-relaxed text-[#1E1E1E]/75 sm:text-lg">
+                A small story waits here.
+              </p>
+              <span className="inline-flex rounded-full bg-[#1E1E1E] px-6 py-3 text-sm tracking-[0.14em] text-[#FAF6F0]">
+                Tap to begin
+              </span>
+            </div>
+          </button>
         );
       case 1:
         return (
