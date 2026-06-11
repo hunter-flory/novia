@@ -1,19 +1,7 @@
-// This file can be used to define templates for different scenes in the experience player.
-export const theme = {
-    colors: {
-        background: "#FAF6F0",
-        card: "#FFFDF8",
-        text: "#1E1E1E",
-        accent: "#D97A8C",
-        muted: "#8A7E7E",
-    },
+/**
+ * @deprecated Use lib/theme.ts instead.
+ * This file is retained for backward compatibility during migration.
+ */
 
-    radius: {
-        card: "28px",
-        button: "20px",
-    },
-
-    shadow: {
-        card: "0 20px 60px rgba(0, 0, 0, 0.08)",
-    },
-}
+export { theme as default } from "@/lib/theme";
+export { theme } from "@/lib/theme";

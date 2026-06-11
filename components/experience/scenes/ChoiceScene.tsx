@@ -1,14 +1,24 @@
+/**
+ * ChoiceScene: Interactive choice prompt with decision buttons.
+ * Users can choose between affirmative or dodge option, with celebration state.
+ */
+
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
+import type { SceneComponentProps } from "@/components/experience/renderer/SceneRegistry";
+import { SceneShell } from "@/components/experience/renderer/SceneShell";
+import type { ChoiceSceneBlock } from "@/components/experience/types/experience";
+import { theme } from "@/lib/theme";
 
-type Position = {
+interface Position {
   x: number;
   y: number;
-};
+}
 
-export default function QuestionScene() {
+export default function ChoiceScene({ block }: SceneComponentProps) {
+  const sceneData = block as ChoiceSceneBlock;
   const [showQuestion, setShowQuestion] = useState(false);
   const [saidYes, setSaidYes] = useState(false);
   const [noPosition, setNoPosition] = useState<Position>({ x: 16, y: 18 });
@@ -37,7 +47,7 @@ export default function QuestionScene() {
     });
   };
 
-  const yesText = useMemo(
+  const celebrationText = useMemo(
     () => (
       <motion.div
         initial={{ opacity: 0, y: 14, scale: 0.98 }}
@@ -49,24 +59,30 @@ export default function QuestionScene() {
           animate={{ scale: [1, 1.04, 1], opacity: [0.95, 1, 0.95] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           className="text-3xl leading-tight sm:text-4xl"
-          style={{ fontFamily: '"Didot", "Bodoni MT", "Times New Roman", serif' }}
+          style={{
+            fontFamily: theme.typography.displayFamily,
+            color: theme.colors.accent,
+          }}
         >
-          SHE SAID YES ❤️
+          {sceneData.celebrationText || "SHE SAID YES ❤️"}
         </motion.p>
       </motion.div>
     ),
-    []
+    [sceneData.celebrationText]
   );
 
   return (
-    <div className="flex h-full w-full items-center justify-center px-6">
-      <div className="w-full max-w-sm text-center">
+    <SceneShell contentClassName="text-center">
+      <div className="w-full">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
           className="text-2xl leading-relaxed"
-          style={{ fontFamily: '"Didot", "Bodoni MT", "Times New Roman", serif' }}
+          style={{
+            fontFamily: theme.typography.displayFamily,
+            color: theme.colors.textPrimary,
+          }}
         >
           So I have one question...
         </motion.p>
@@ -76,9 +92,12 @@ export default function QuestionScene() {
           animate={{ opacity: showQuestion ? 1 : 0, y: showQuestion ? 0 : 12 }}
           transition={{ duration: 0.9, ease: "easeOut" }}
           className="mt-5 text-3xl leading-snug"
-          style={{ fontFamily: '"Didot", "Bodoni MT", "Times New Roman", serif' }}
+          style={{
+            fontFamily: theme.typography.displayFamily,
+            color: theme.colors.textPrimary,
+          }}
         >
-          Will you be my girlfriend?
+          {sceneData.prompt}
         </motion.p>
 
         {!saidYes && (
@@ -86,28 +105,44 @@ export default function QuestionScene() {
             <button
               type="button"
               onClick={() => setSaidYes(true)}
-              className="w-full rounded-full bg-[#D97A8C] px-8 py-3 text-base font-medium text-white shadow-[0_10px_26px_rgba(217,122,140,0.35)]"
+              className="w-full rounded-full px-8 py-3 text-base font-medium shadow-[0_10px_26px_rgba(217,122,140,0.35)]"
+              style={{
+                backgroundColor: theme.colors.accent,
+                color: "white",
+              }}
             >
-              Yes ❤️
+              {sceneData.yesLabel || "Yes ❤️"}
             </button>
 
-            <div ref={containerRef} className="relative mt-5 h-36 w-full rounded-2xl border border-[#1E1E1E]/15 bg-white/45">
+            <div
+              ref={containerRef}
+              className="relative mt-5 h-44 w-full rounded-2xl border sm:h-48"
+              style={{
+                borderColor: theme.colors.border,
+                backgroundColor: theme.colors.surface,
+              }}
+            >
               <motion.button
                 type="button"
                 onClick={moveNoButton}
                 onMouseEnter={moveNoButton}
                 animate={{ x: noPosition.x, y: noPosition.y }}
                 transition={{ duration: 0.28, ease: "easeOut" }}
-                className="absolute left-0 top-0 rounded-full border border-[#1E1E1E]/20 bg-[#fffaf6] px-6 py-2 text-sm font-medium text-[#1E1E1E]"
+                className="absolute left-0 top-0 rounded-full border px-6 py-2 text-sm font-medium"
+                style={{
+                  borderColor: theme.colors.border,
+                  backgroundColor: theme.colors.background,
+                  color: theme.colors.textPrimary,
+                }}
               >
-                No 😡
+                {sceneData.noLabel || "No 😡"}
               </motion.button>
             </div>
           </div>
         )}
 
-        {saidYes && yesText}
+        {saidYes && celebrationText}
       </div>
-    </div>
+    </SceneShell>
   );
 }
